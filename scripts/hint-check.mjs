@@ -1,0 +1,16 @@
+// Verifies the bottom-centre hint toast is actually visible once the scene is ready, and clears on first input.
+import { chromium } from 'playwright'
+const b = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] })
+const p = await b.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 })
+await p.goto(process.argv[2] || 'http://localhost:5173/', { waitUntil: 'load' })
+await p.waitForFunction(() => window.__CAR, null, { timeout: 90000 })
+await p.waitForTimeout(1200)
+const shown = await p.evaluate(() => { const e = document.querySelector('[data-ui="hint"]'); const r = e?.getBoundingClientRect(); return { present: !!e, w: Math.round(r?.width || 0), text: e?.textContent?.slice(0, 40) } })
+console.log('after ready:', JSON.stringify(shown))
+await p.screenshot({ path: '/tmp/claude-501/hint.png', timeout: 0 })
+await p.mouse.move(700, 400); await p.mouse.down(); await p.mouse.up()
+await p.waitForTimeout(600)
+const gone = await p.evaluate(() => !document.querySelector('[data-ui="hint"]'))
+console.log('cleared on click:', gone)
+await b.close()
+console.log(shown.present && shown.w > 0 && gone ? 'HINT OK' : 'HINT FAIL')

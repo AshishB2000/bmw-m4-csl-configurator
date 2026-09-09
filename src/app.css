@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+html, body, #root { height: 100%; margin: 0; overflow: hidden; }
+body {
+  background: #050507;
+  color: #e7e7ea;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Inter", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+}
+/* stage backdrop per environment */
+.stage { background: radial-gradient(120% 90% at 50% 30%, #1a1a20 0%, #0a0a0d 55%, #050507 100%); }
+.stage[data-env="sunset"] { background: radial-gradient(120% 90% at 50% 30%, #3a2418 0%, #14100e 55%, #070506 100%); }
+.stage[data-env="night"]  { background: radial-gradient(120% 90% at 50% 30%, #0b1020 0%, #060810 55%, #030308 100%); }
+.stage[data-env="city"]   { background: radial-gradient(120% 90% at 50% 30%, #1c2230 0%, #0b0e14 55%, #050608 100%); }
+
+/* --- overlay design tokens: one glass surface, one radius, one border, 8px scale --- */
+:root { --rail-h: 0px; --edge: 24px; }
+@media (max-width: 767px) { :root { --edge: 12px; } }
+.glass {
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(9, 9, 11, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+.r-lg { border-radius: 16px; }
+.r-md { border-radius: 12px; }
+.r-pill { border-radius: 9999px; }
+/* segmented button inside a pill/glass bar — one style everywhere */
+.seg { border-radius: 9999px; padding: 6px 12px; font-size: 12px; line-height: 1; transition: background-color .15s, color .15s; white-space: nowrap; }
+.seg-on { background: #fff; color: #000; }
+.seg-off { color: #d4d4d8; }
+.seg-off:hover { background: rgba(255, 255, 255, 0.10); color: #fff; }
+
+input[type="range"] { accent-color: #fff; width: 100%; height: 18px; cursor: pointer; }
+input[type="color"] { -webkit-appearance: none; appearance: none; border: 0; padding: 0; background: none; cursor: pointer; }
+input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+input[type="color"]::-webkit-color-swatch { border: 0; border-radius: 9999px; }
+
+.hotspot { animation: pulse 2.2s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,255,255,.35);} 50% { box-shadow: 0 0 0 10px rgba(255,255,255,0);} }
+.fade-in { animation: fade .35s ease-out both; }
+@keyframes fade { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: none;} }
